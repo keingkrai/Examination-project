@@ -1,0 +1,14 @@
+autogen-agentchat
+autogen-ext[opennai]
+autogenstudio
+flask
+flask[async]
+transformers
+scikit-learn
+torch
+numpy
+tiktoken
+openai
+
+
+Your task is to check the input text for the usage of double quotes or commas. If you find any, remove them or replace with single quotes. Do not return anything with double quotes or commas.

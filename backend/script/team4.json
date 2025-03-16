@@ -1,0 +1,246 @@
+{
+    "provider": "autogen_agentchat.teams.RoundRobinGroupChat",
+    "component_type": "team",
+    "version": 1,
+    "component_version": 1,
+    "description": "A team that runs a group chat with participants taking turns in a round-robin fashion\n    to publish a message to all.",
+    "label": "RoundRobinGroupChat",
+    "config": {
+        "participants": [
+            {
+                "provider": "autogen_agentchat.agents.SocietyOfMindAgent",
+                "component_type": "agent",
+                "version": 1,
+                "component_version": 1,
+                "description": "An agent that uses an inner team of agents to generate responses.",
+                "label": "SocietyOfMindAgent",
+                "config": {
+                    "name": "society_of_mind",
+                    "team": {
+                        "provider": "autogen_agentchat.teams.RoundRobinGroupChat",
+                        "component_type": "team",
+                        "version": 1,
+                        "component_version": 1,
+                        "description": "A team that runs a group chat with participants taking turns in a round-robin fashion\n    to publish a message to all.",
+                        "label": "RoundRobinGroupChat",
+                        "config": {
+                            "participants": [
+                                {
+                                    "provider": "autogen_agentchat.agents.AssistantAgent",
+                                    "component_type": "agent",
+                                    "version": 1,
+                                    "component_version": 1,
+                                    "description": "An agent that provides assistance with tool use.",
+                                    "label": "AssistantAgent",
+                                    "config": {
+                                        "name": "score_checker",
+                                        "model_client": {
+                                            "provider": "autogen_ext.models.openai.OpenAIChatCompletionClient",
+                                            "component_type": "model",
+                                            "version": 1,
+                                            "component_version": 1,
+                                            "description": "Chat completion client for OpenAI hosted models.",
+                                            "label": "OpenAIChatCompletionClient",
+                                            "config": {
+                                                "model": "deepseek-r1-distill-llama-70b",
+                                                "api_key": "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",
+                                                "model_info": {
+                                                    "vision": false,
+                                                    "function_calling": true,
+                                                    "json_output": false,
+                                                    "family": "r1"
+                                                },
+                                                "base_url": "https://api.groq.com/openai/v1"
+                                            }
+                                        },
+                                        "tools": [],
+                                        "handoffs": [],
+                                        "model_context": {
+                                            "provider": "autogen_core.model_context.UnboundedChatCompletionContext",
+                                            "component_type": "chat_completion_context",
+                                            "version": 1,
+                                            "component_version": 1,
+                                            "description": "An unbounded chat completion context that keeps a view of the all the messages.",
+                                            "label": "UnboundedChatCompletionContext",
+                                            "config": {}
+                                        },
+                                        "description": "An agent that provides assistance with ability to use tools.",
+                                        "system_message": "You are the examiner. Provide a score and explain the reasoning behind the score without mentioning any similarities between the teacher's answer and the student's answer in your explanation. Do not use double quotes or commas.",
+                                        "model_client_stream": false,
+                                        "reflect_on_tool_use": false,
+                                        "tool_call_summary_format": "{result}"
+                                    }
+                                },
+                                {
+                                    "provider": "autogen_agentchat.agents.AssistantAgent",
+                                    "component_type": "agent",
+                                    "version": 1,
+                                    "component_version": 1,
+                                    "description": "An agent that provides assistance with tool use.",
+                                    "label": "AssistantAgent",
+                                    "config": {
+                                        "name": "reason_checker",
+                                        "model_client": {
+                                            "provider": "autogen_ext.models.openai.OpenAIChatCompletionClient",
+                                            "component_type": "model",
+                                            "version": 1,
+                                            "component_version": 1,
+                                            "description": "Chat completion client for OpenAI hosted models.",
+                                            "label": "OpenAIChatCompletionClient",
+                                            "config": {
+                                                "model": "deepseek-r1-distill-llama-70b",
+                                                "api_key": "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",
+                                                "model_info": {
+                                                    "vision": false,
+                                                    "function_calling": true,
+                                                    "json_output": false,
+                                                    "family": "r1"
+                                                },
+                                                "base_url": "https://api.groq.com/openai/v1"
+                                            }
+                                        },
+                                        "tools": [],
+                                        "handoffs": [],
+                                        "model_context": {
+                                            "provider": "autogen_core.model_context.UnboundedChatCompletionContext",
+                                            "component_type": "chat_completion_context",
+                                            "version": 1,
+                                            "component_version": 1,
+                                            "description": "An unbounded chat completion context that keeps a view of the all the messages.",
+                                            "label": "UnboundedChatCompletionContext",
+                                            "config": {}
+                                        },
+                                        "description": "An agent that provides assistance with ability to use tools.",
+                                        "system_message": "You are the examiner. Return any inconsistencies.If the score and reasoning are reasonable and not use double quotes and comma, display the word 'APPROVE'.",
+                                        "model_client_stream": false,
+                                        "reflect_on_tool_use": false,
+                                        "tool_call_summary_format": "{result}"
+                                    }
+                                }
+                            ],
+                            "termination_condition": {
+                                "provider": "autogen_agentchat.base.OrTerminationCondition",
+                                "component_type": "termination",
+                                "version": 1,
+                                "component_version": 1,
+                                "label": "OrTerminationCondition",
+                                "config": {
+                                    "conditions": [
+                                        {
+                                            "provider": "autogen_agentchat.conditions.TextMentionTermination",
+                                            "component_type": "termination",
+                                            "version": 1,
+                                            "component_version": 1,
+                                            "description": "Terminate the conversation if a specific text is mentioned.",
+                                            "label": "TextMentionTermination",
+                                            "config": {
+                                                "text": "APPROVE"
+                                            }
+                                        },
+                                        {
+                                            "provider": "autogen_agentchat.conditions.MaxMessageTermination",
+                                            "component_type": "termination",
+                                            "version": 1,
+                                            "component_version": 1,
+                                            "description": "Terminate the conversation after a maximum number of messages have been exchanged.",
+                                            "label": "MaxMessageTermination",
+                                            "config": {
+                                                "max_messages": 5,
+                                                "include_agent_event": false
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "model_client": {
+                        "provider": "autogen_ext.models.openai.OpenAIChatCompletionClient",
+                        "component_type": "model",
+                        "version": 1,
+                        "component_version": 1,
+                        "description": "Chat completion client for OpenAI hosted models.",
+                        "label": "OpenAIChatCompletionClient",
+                        "config": {
+                            "model": "deepseek-r1-distill-llama-70b",
+                            "api_key": "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",
+                            "model_info": {
+                                "vision": false,
+                                "function_calling": true,
+                                "json_output": false,
+                                "family": "r1"
+                            },
+                            "base_url": "https://api.groq.com/openai/v1"
+                        }
+                    },
+                    "description": "An agent that uses an inner team of agents to generate responses.",
+                    "instruction": "Earlier you were asked to fulfill a request. You and your team worked diligently to address that request. Here is a transcript of that conversation:",
+                    "response_prompt": "Output a standalone response to the original request, without mentioning any of the intermediate discussion."
+                }
+            },
+            {
+                "provider": "autogen_agentchat.agents.AssistantAgent",
+                "component_type": "agent",
+                "version": 1,
+                "component_version": 1,
+                "description": "An agent that provides assistance with tool use.",
+                "label": "AssistantAgent",
+                "config": {
+                    "name": "translator",
+                    "model_client": {
+                        "provider": "autogen_ext.models.openai.OpenAIChatCompletionClient",
+                        "component_type": "model",
+                        "version": 1,
+                        "component_version": 1,
+                        "description": "Chat completion client for OpenAI hosted models.",
+                        "label": "OpenAIChatCompletionClient",
+                        "config": {
+                            "model": "deepseek-r1-distill-llama-70b",
+                            "api_key": "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",
+                            "model_info": {
+                                "vision": false,
+                                "function_calling": true,
+                                "json_output": false,
+                                "family": "r1"
+                            },
+                            "base_url": "https://api.groq.com/openai/v1"
+                        }
+                    },
+                    "tools": [
+                        {
+                            "provider": "autogen_core.tools.FunctionTool",
+                            "component_type": "tool",
+                            "version": 1,
+                            "component_version": 1,
+                            "description": "Create custom tools by wrapping standard Python functions.",
+                            "label": "FunctionTool",
+                            "config": {
+                                "source_code": "async def get_detailexam(earnscore: int, reason: str):\n    return f\"The score received: {earnscore}.The reasoning is: {reason}\"\n",
+                                "name": "get_detailexam",
+                                "description": "",
+                                "global_imports": [],
+                                "has_cancellation_support": false
+                            }
+                        }
+                    ],
+                    "handoffs": [],
+                    "model_context": {
+                        "provider": "autogen_core.model_context.UnboundedChatCompletionContext",
+                        "component_type": "chat_completion_context",
+                        "version": 1,
+                        "component_version": 1,
+                        "description": "An unbounded chat completion context that keeps a view of the all the messages.",
+                        "label": "UnboundedChatCompletionContext",
+                        "config": {}
+                    },
+                    "description": "An agent that provides assistance with ability to use tools.",
+                    "system_message": "Must translate the text into Thai and not use double quotes and commas.",
+                    "model_client_stream": false,
+                    "reflect_on_tool_use": false,
+                    "tool_call_summary_format": "{result}"
+                }
+            }
+        ],
+        "max_turns": 2
+    }
+}

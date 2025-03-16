@@ -1,0 +1,167 @@
+{
+    "provider": "autogen_agentchat.teams.RoundRobinGroupChat",
+    "component_type": "team",
+    "version": 1,
+    "component_version": 1,
+    "description": "A team that runs a group chat with participants taking turns in a round-robin fashion\n    to publish a message to all.",
+    "label": "RoundRobinGroupChat",
+    "config": {
+        "participants": [
+            {
+                "provider": "autogen_agentchat.agents.AssistantAgent",
+                "component_type": "agent",
+                "version": 1,
+                "component_version": 1,
+                "description": "An agent that provides assistance with tool use.",
+                "label": "AssistantAgent",
+                "config": {
+                    "name": "reason_checker",
+                    "model_client": {
+                        "provider": "autogen_ext.models.openai.OpenAIChatCompletionClient",
+                        "component_type": "model",
+                        "version": 1,
+                        "component_version": 1,
+                        "description": "Chat completion client for OpenAI hosted models.",
+                        "label": "OpenAIChatCompletionClient",
+                        "config": {
+                            "model": "deepseek-r1-distill-llama-70b",
+                            "api_key": "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",
+                            "model_info": {
+                                "vision": false,
+                                "function_calling": true,
+                                "json_output": false,
+                                "family": "r1"
+                            },
+                            "base_url": "https://api.groq.com/openai/v1"
+                        }
+                    },
+                    "tools": [],
+                    "handoffs": [],
+                    "model_context": {
+                        "provider": "autogen_core.model_context.UnboundedChatCompletionContext",
+                        "component_type": "chat_completion_context",
+                        "version": 1,
+                        "component_version": 1,
+                        "description": "An unbounded chat completion context that keeps a view of the all the messages.",
+                        "label": "UnboundedChatCompletionContext",
+                        "config": {}
+                    },
+                    "description": "An agent that provides assistance with ability to use tools.",
+                    "system_message": "\n            You are an exam evaluator responsible for explaining why the teacher assigned a specific score. Your evaluation must be based on the following criteria:\n\n            1. **Accuracy**: Does the student's answer align with the core idea of the question?  \n            2. **Completeness**: Is the answer sufficiently detailed?  \n            3. **Logic & Reasoning**: Is the explanation coherent and logically structured?  \n\n            **Your task**:  \n            - Clearly explain why the teacher assigned the given score based on the criteria above.  \n            - Avoid regrading the answer\u2014simply justify the assigned score.  \n            - Provide a structured response, such as: **\"This score is given because...\"** or **\"The reason for this score is...\"**  \n            - Do not use quotation marks (\"\") or commas (,).  \n            ",
+                    "model_client_stream": false,
+                    "reflect_on_tool_use": false,
+                    "tool_call_summary_format": "{result}"
+                }
+            },
+            {
+                "provider": "autogen_agentchat.agents.AssistantAgent",
+                "component_type": "agent",
+                "version": 1,
+                "component_version": 1,
+                "description": "An agent that provides assistance with tool use.",
+                "label": "AssistantAgent",
+                "config": {
+                    "name": "solution_checker",
+                    "model_client": {
+                        "provider": "autogen_ext.models.openai.OpenAIChatCompletionClient",
+                        "component_type": "model",
+                        "version": 1,
+                        "component_version": 1,
+                        "description": "Chat completion client for OpenAI hosted models.",
+                        "label": "OpenAIChatCompletionClient",
+                        "config": {
+                            "model": "deepseek-r1-distill-llama-70b",
+                            "api_key": "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",
+                            "model_info": {
+                                "vision": false,
+                                "function_calling": true,
+                                "json_output": false,
+                                "family": "r1"
+                            },
+                            "base_url": "https://api.groq.com/openai/v1"
+                        }
+                    },
+                    "tools": [],
+                    "handoffs": [],
+                    "model_context": {
+                        "provider": "autogen_core.model_context.UnboundedChatCompletionContext",
+                        "component_type": "chat_completion_context",
+                        "version": 1,
+                        "component_version": 1,
+                        "description": "An unbounded chat completion context that keeps a view of the all the messages.",
+                        "label": "UnboundedChatCompletionContext",
+                        "config": {}
+                    },
+                    "description": "An agent that provides assistance with ability to use tools.",
+                    "system_message": "\n        You are an academic advisor helping students improve their answers to achieve higher scores. Your role is to suggest specific ways to enhance their response.\n\n        **Your task**:  \n        1. Identify weaknesses in the answer that led to point deductions, e.g., **\"The answer lacks clear reasoning\"**, **\"The explanation is too brief\"**.  \n        2. Suggest precise improvements, e.g., **\"Provide more supporting examples\"**, **\"Clarify key ideas in more detail\"**.  \n        3. Do not alter the assigned score\u2014focus only on **offering constructive feedback for improvement**.  \n        4. Use a structured response, such as: **\"To earn a higher score, the student should...\"**  \n\n        Do not use quotation marks (\"\") or commas (,).  \n        ",
+                    "model_client_stream": false,
+                    "reflect_on_tool_use": false,
+                    "tool_call_summary_format": "{result}"
+                }
+            },
+            {
+                "provider": "autogen_agentchat.agents.AssistantAgent",
+                "component_type": "agent",
+                "version": 1,
+                "component_version": 1,
+                "description": "An agent that provides assistance with tool use.",
+                "label": "AssistantAgent",
+                "config": {
+                    "name": "translator",
+                    "model_client": {
+                        "provider": "autogen_ext.models.openai.OpenAIChatCompletionClient",
+                        "component_type": "model",
+                        "version": 1,
+                        "component_version": 1,
+                        "description": "Chat completion client for OpenAI hosted models.",
+                        "label": "OpenAIChatCompletionClient",
+                        "config": {
+                            "model": "deepseek-r1-distill-llama-70b",
+                            "api_key": "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",
+                            "model_info": {
+                                "vision": false,
+                                "function_calling": true,
+                                "json_output": false,
+                                "family": "r1"
+                            },
+                            "base_url": "https://api.groq.com/openai/v1"
+                        }
+                    },
+                    "tools": [
+                        {
+                            "provider": "autogen_core.tools.FunctionTool",
+                            "component_type": "tool",
+                            "version": 1,
+                            "component_version": 1,
+                            "description": "Create custom tools by wrapping standard Python functions.",
+                            "label": "FunctionTool",
+                            "config": {
+                                "source_code": "async def get_detailexam(earnscore: int, reason: str):\n    return f\"The score received: {earnscore}.The reasoning is: {reason}\"\n",
+                                "name": "get_detailexam",
+                                "description": "",
+                                "global_imports": [],
+                                "has_cancellation_support": false
+                            }
+                        }
+                    ],
+                    "handoffs": [],
+                    "model_context": {
+                        "provider": "autogen_core.model_context.UnboundedChatCompletionContext",
+                        "component_type": "chat_completion_context",
+                        "version": 1,
+                        "component_version": 1,
+                        "description": "An unbounded chat completion context that keeps a view of the all the messages.",
+                        "label": "UnboundedChatCompletionContext",
+                        "config": {}
+                    },
+                    "description": "An agent that provides assistance with ability to use tools.",
+                    "system_message": "\n        You are a professional translator and editor responsible for translating and refining the feedback into Thai.\n\n        **Your task**:  \n        1. Must translate all content into **natural and easy-to-understand Thai**.  \n        2. Ensure the explanation is **clear, logical, and maintains its original meaning**.  \n        3. Do not modify the reasoning or add unnecessary details.  \n        4. Avoid using complex or unnatural vocabulary.  \n\n        Do not use quotation marks (\"\") or commas (,).  \n        ",
+                    "model_client_stream": false,
+                    "reflect_on_tool_use": true,
+                    "tool_call_summary_format": "{result}"
+                }
+            }
+        ],
+        "max_turns": 3
+    }
+}

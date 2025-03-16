@@ -1,0 +1,121 @@
+{
+    "provider": "autogen_agentchat.teams.RoundRobinGroupChat",
+    "component_type": "team",
+    "version": 1,
+    "component_version": 1,
+    "description": "A team that runs a group chat with participants taking turns in a round-robin fashion\n    to publish a message to all.",
+    "label": "RoundRobinGroupChat",
+    "config": {
+        "participants": [
+            {
+                "provider": "autogen_agentchat.agents.AssistantAgent",
+                "component_type": "agent",
+                "version": 1,
+                "component_version": 1,
+                "description": "An agent that provides assistance with tool use.",
+                "label": "AssistantAgent",
+                "config": {
+                    "name": "score_and_solution_checker",
+                    "model_client": {
+                        "provider": "autogen_ext.models.openai.OpenAIChatCompletionClient",
+                        "component_type": "model",
+                        "version": 1,
+                        "component_version": 1,
+                        "description": "Chat completion client for OpenAI hosted models.",
+                        "label": "OpenAIChatCompletionClient",
+                        "config": {
+                            "model": "deepseek-r1-distill-llama-70b",
+                            "api_key": "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",
+                            "model_info": {
+                                "vision": false,
+                                "function_calling": true,
+                                "json_output": false,
+                                "family": "r1"
+                            },
+                            "base_url": "https://api.groq.com/openai/v1"
+                        }
+                    },
+                    "tools": [],
+                    "handoffs": [],
+                    "model_context": {
+                        "provider": "autogen_core.model_context.UnboundedChatCompletionContext",
+                        "component_type": "chat_completion_context",
+                        "version": 1,
+                        "component_version": 1,
+                        "description": "An unbounded chat completion context that keeps a view of the all the messages.",
+                        "label": "UnboundedChatCompletionContext",
+                        "config": {}
+                    },
+                    "description": "An agent that provides assistance with ability to use tools.",
+                    "system_message": "\n    You are an exam grader responsible for evaluating students' answers.\n    \n    **Task 1: Justify the given score**  \n    - Explain why the answer received its score based on the following criteria:  \n      1. Accuracy  \n      2. Completeness  \n      3. Logical reasoning  \n    - Keep it concise (2-3 sentences).  \n\n    **Task 2: Suggest improvements**  \n    - Identify key weaknesses that caused score deductions.  \n    - Provide clear, actionable suggestions to improve the answer.  \n\n    Do **not** modify the assigned score. Avoid using quotation marks (\"\") or commas (,).\n    ",
+                    "model_client_stream": false,
+                    "reflect_on_tool_use": false,
+                    "tool_call_summary_format": "{result}"
+                }
+            },
+            {
+                "provider": "autogen_agentchat.agents.AssistantAgent",
+                "component_type": "agent",
+                "version": 1,
+                "component_version": 1,
+                "description": "An agent that provides assistance with tool use.",
+                "label": "AssistantAgent",
+                "config": {
+                    "name": "translator",
+                    "model_client": {
+                        "provider": "autogen_ext.models.openai.OpenAIChatCompletionClient",
+                        "component_type": "model",
+                        "version": 1,
+                        "component_version": 1,
+                        "description": "Chat completion client for OpenAI hosted models.",
+                        "label": "OpenAIChatCompletionClient",
+                        "config": {
+                            "model": "llama-3.2-90b-vision-preview",
+                            "api_key": "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",
+                            "model_info": {
+                                "vision": false,
+                                "function_calling": true,
+                                "json_output": false,
+                                "family": "unknown"
+                            },
+                            "base_url": "https://api.groq.com/openai/v1"
+                        }
+                    },
+                    "tools": [
+                        {
+                            "provider": "autogen_core.tools.FunctionTool",
+                            "component_type": "tool",
+                            "version": 1,
+                            "component_version": 1,
+                            "description": "Create custom tools by wrapping standard Python functions.",
+                            "label": "FunctionTool",
+                            "config": {
+                                "source_code": "async def get_detailexam(earnscore: int, reason: str):\n    return f\"The score received: {earnscore}.The reasoning is: {reason}\"\n",
+                                "name": "get_detailexam",
+                                "description": "",
+                                "global_imports": [],
+                                "has_cancellation_support": false
+                            }
+                        }
+                    ],
+                    "handoffs": [],
+                    "model_context": {
+                        "provider": "autogen_core.model_context.UnboundedChatCompletionContext",
+                        "component_type": "chat_completion_context",
+                        "version": 1,
+                        "component_version": 1,
+                        "description": "An unbounded chat completion context that keeps a view of the all the messages.",
+                        "label": "UnboundedChatCompletionContext",
+                        "config": {}
+                    },
+                    "description": "An agent that provides assistance with ability to use tools.",
+                    "system_message": "\n        You are a professional translator and editor responsible for translating and refining the feedback into Thai.\n\n        **Your task**:  \n        1. Must translate all content into **natural and easy-to-understand Thai**.  \n        2. Ensure the explanation is **clear, logical, and maintains its original meaning**.  \n        3. Do not modify the reasoning or add unnecessary details.  \n        4. Avoid using complex or unnatural vocabulary.  \n\n        Do not use quotation marks (\"\") or commas (,).  \n        ",
+                    "model_client_stream": false,
+                    "reflect_on_tool_use": true,
+                    "tool_call_summary_format": "{result}"
+                }
+            }
+        ],
+        "max_turns": 2
+    }
+}

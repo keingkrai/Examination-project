@@ -1,0 +1,121 @@
+{
+    "provider": "autogen_agentchat.teams.RoundRobinGroupChat",
+    "component_type": "team",
+    "version": 1,
+    "component_version": 1,
+    "description": "A team that runs a group chat with participants taking turns in a round-robin fashion\n    to publish a message to all.",
+    "label": "RoundRobinGroupChat",
+    "config": {
+        "participants": [
+            {
+                "provider": "autogen_agentchat.agents.AssistantAgent",
+                "component_type": "agent",
+                "version": 1,
+                "component_version": 1,
+                "description": "An agent that provides assistance with tool use.",
+                "label": "AssistantAgent",
+                "config": {
+                    "name": "rubric_scoring_agent",
+                    "model_client": {
+                        "provider": "autogen_ext.models.openai.OpenAIChatCompletionClient",
+                        "component_type": "model",
+                        "version": 1,
+                        "component_version": 1,
+                        "description": "Chat completion client for OpenAI hosted models.",
+                        "label": "OpenAIChatCompletionClient",
+                        "config": {
+                            "model": "deepseek-r1-distill-llama-70b",
+                            "api_key": "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",
+                            "model_info": {
+                                "vision": false,
+                                "function_calling": true,
+                                "json_output": false,
+                                "family": "r1"
+                            },
+                            "base_url": "https://api.groq.com/openai/v1"
+                        }
+                    },
+                    "tools": [],
+                    "handoffs": [],
+                    "model_context": {
+                        "provider": "autogen_core.model_context.UnboundedChatCompletionContext",
+                        "component_type": "chat_completion_context",
+                        "version": 1,
+                        "component_version": 1,
+                        "description": "An unbounded chat completion context that keeps a view of the all the messages.",
+                        "label": "UnboundedChatCompletionContext",
+                        "config": {}
+                    },
+                    "description": "An agent that provides assistance with ability to use tools.",
+                    "system_message": " \n\ud83d\udccc **Subjective Exam Grading Task (Rubric-Based Assessment with Variable Total Score)**  \n\n### **Question:**  \n\"What is the capital of Thailand?\"  \n\n- **Teacher\u2019s Answer (Model Answer):** \"Bangkok\"  \n- **Student\u2019s Answer:** \"Bangkok\"  \n- **Total Possible Score:** [X] Points (this may vary per question)  \n\n### **\ud83d\udcd6 Grading Rubric (Proportional Scoring):**  \nThe answer is evaluated based on the following **three criteria**, where the weight of each category is calculated as a percentage of the total possible score:  \n\n1\ufe0f\u20e3 **Correctness (40% of total score)**  \n   - Full marks: The answer is completely correct.  \n   - Partial marks: The answer is mostly correct but has minor factual errors.  \n   - No marks: The answer is incorrect or does not match the expected response.  \n\n2\ufe0f\u20e3 **Relevance (40% of total score)**  \n   - Full marks: The answer is directly relevant to the question.  \n   - Partial marks: The answer is mostly relevant but includes unnecessary or off-topic details.  \n   - No marks: The answer is not relevant to the question.  \n\n3\ufe0f\u20e3 **Logical Reasoning (20% of total score)**  \n   - Full marks: The answer demonstrates clear logical reasoning.  \n   - No marks: The answer lacks logical coherence or contradicts itself.  \n\n---\n\n\u270d\ufe0f **Instructions for AI:**  \n1\ufe0f\u20e3 **Evaluate the student's answer based on the rubric criteria (Correctness, Relevance, and Logical Reasoning) using proportional scoring.**  \n2\ufe0f\u20e3 **Calculate the final score dynamically based on the total possible score [X] for the question.**  \n3\ufe0f\u20e3 **Provide a detailed step-by-step justification for each score assigned.**  \n4\ufe0f\u20e3 **If full marks are awarded, clearly explain why each criterion met the highest standard.**  \n5\ufe0f\u20e3 **If points are deducted, explain which criteria were not fully met and why.**  \n6\ufe0f\u20e3 **Format your response clearly, using a structured breakdown of the rubric criteria.**  \n",
+                    "model_client_stream": false,
+                    "reflect_on_tool_use": false,
+                    "tool_call_summary_format": "{result}"
+                }
+            },
+            {
+                "provider": "autogen_agentchat.agents.AssistantAgent",
+                "component_type": "agent",
+                "version": 1,
+                "component_version": 1,
+                "description": "An agent that provides assistance with tool use.",
+                "label": "AssistantAgent",
+                "config": {
+                    "name": "translator",
+                    "model_client": {
+                        "provider": "autogen_ext.models.openai.OpenAIChatCompletionClient",
+                        "component_type": "model",
+                        "version": 1,
+                        "component_version": 1,
+                        "description": "Chat completion client for OpenAI hosted models.",
+                        "label": "OpenAIChatCompletionClient",
+                        "config": {
+                            "model": "deepseek-r1-distill-qwen-32b",
+                            "api_key": "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",
+                            "model_info": {
+                                "vision": false,
+                                "function_calling": true,
+                                "json_output": false,
+                                "family": "r1"
+                            },
+                            "base_url": "https://api.groq.com/openai/v1"
+                        }
+                    },
+                    "tools": [
+                        {
+                            "provider": "autogen_core.tools.FunctionTool",
+                            "component_type": "tool",
+                            "version": 1,
+                            "component_version": 1,
+                            "description": "Create custom tools by wrapping standard Python functions.",
+                            "label": "FunctionTool",
+                            "config": {
+                                "source_code": "async def get_detailexam(earnscore: int):\n    return f\"The score received: {earnscore}\"\n",
+                                "name": "get_detailexam",
+                                "description": "",
+                                "global_imports": [],
+                                "has_cancellation_support": false
+                            }
+                        }
+                    ],
+                    "handoffs": [],
+                    "model_context": {
+                        "provider": "autogen_core.model_context.UnboundedChatCompletionContext",
+                        "component_type": "chat_completion_context",
+                        "version": 1,
+                        "component_version": 1,
+                        "description": "An unbounded chat completion context that keeps a view of the all the messages.",
+                        "label": "UnboundedChatCompletionContext",
+                        "config": {}
+                    },
+                    "description": "An agent that provides assistance with ability to use tools.",
+                    "system_message": "Translate the evaluation into Thai. The translation **must include** details from both 'rubric scoring' and 'Score'. Do not omit or summarize any part.",
+                    "model_client_stream": false,
+                    "reflect_on_tool_use": false,
+                    "tool_call_summary_format": "{result}"
+                }
+            }
+        ],
+        "max_turns": 2
+    }
+}
