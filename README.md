@@ -118,13 +118,6 @@ Examination-project/
 
 ---
 
-## ✅ ฟีเจอร์ในอนาคต (Future Features)
-- ✅ รองรับ **Multi-language Feedback**  
-- ✅ เพิ่ม **Auto Categorization ของนักเรียนตามระดับคะแนน**  
-- ✅ รองรับ **Exam Analytics แบบ Real-time**  
-
----
-
 ## 📌 License
 MIT License
 
